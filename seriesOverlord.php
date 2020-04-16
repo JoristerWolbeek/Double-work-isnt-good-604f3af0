@@ -109,8 +109,8 @@ textarea {
 <body>
 
     <?php
-    $stmt = $pdo->prepare("SELECT title, rating, description, seasons, country, language, has_won_awards, id FROM netland.series WHERE id=?");
-    $stmt->execute([$_GET['id']]);
+    $stmt = $pdo->prepare("SELECT titel, rating, omschrijving, seizoenen, landVanAfkomst, taal, awards, id FROM netland.inhoud WHERE id=? AND soort='series'");
+    $stmt->execute([intval($_GET["id"])]);
     $info = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
     <a href="http://localhost/series.php<?php echo "?id=$info[id]" ?>">Vorige pagina</a>
@@ -118,21 +118,22 @@ textarea {
 
     <div class="hHoofd">
         <form method="post" class="hoofd">
-            <div class="sub"><b>Titel </b><input type="text" name="name" value="<?php echo $info['title']?>"></div>
+            <div class="sub"><b>Titel </b><input type="text" name="name" value="<?php echo $info['titel']?>"></div>
             <div class="sub"><b>Rating </b><input type="float" name="rating" value="<?php echo $info['rating']?>"></div>
-            <div class="sub"><b>Seizoenen </b><input type="number" name="seizoenen" value="<?php echo $info['seasons']?>"></div>
-            <div class="sub"><b>Beschrijving </b><textarea type="text" name="beschrijving" rows="15" cols="40"> <?php echo $info['description']?> </textarea></div>
-            <div class="sub"><b>Land van afkomst </b><input type="text" name="landVanAfkomst" value="<?php echo $info['country']?>"></div>
-            <div class="sub"><b>Taal </b><input type="text" name="taal" value="<?php echo $info['language']?>"></div>
-            <div class="sub"><b>Gewonnen prijzen </b><input type="number" name="prijzen" value="<?php echo $info['has_won_awards']?>"></div>
-            <div class="subDif"><button type="sumbit">Veranderen</button</div>
+            <div class="sub"><b>Seizoenen </b><input type="number" name="seizoenen" value="<?php echo $info['seizoenen']?>"></div>
+            <div class="sub"><b>Beschrijving </b><textarea type="text" name="beschrijving" rows="15" cols="40"><?php echo $info['omschrijving']?></textarea></div>
+            <div class="sub"><b>Land van afkomst </b><input type="text" name="landVanAfkomst" value="<?php echo $info['landVanAfkomst']?>"></div>
+            <div class="sub"><b>Taal </b><input type="text" name="taal" value="<?php echo $info['taal']?>"></div>
+            <div class="sub"><b>Gewonnen prijzen </b><input type="number" name="prijzen" value="<?php echo $info['awards']?>"></div>
+            <div class="subDif"><button type="sumbit">Veranderen</button></div>
         </form>
     </div>
     
 <?php
+var_dump($info);
     if(isset($_POST["name"]) || isset($_POST["rating"]) || isset($_POST["beschrijving"]) || isset($_POST["landVanAfkomst"]) || isset($_POST["taal"]) || 
     isset($_POST["prijzen"]) || isset($_POST["seizoenen"])){
-        $updateSeries = $pdo->prepare("UPDATE series SET title=?, description=?, country=?, language=?, has_won_awards=?, rating=?, seasons=? WHERE id=?");
+        $updateSeries = $pdo->prepare("UPDATE inhoud SET titel=?, omschrijving=?, landVanAfkomst=?, taal=?, awards=?, rating=?, seizoenen=? WHERE id=? AND soort='series'");
         $updateSeries->execute([$_POST["name"], $_POST["beschrijving"], $_POST["landVanAfkomst"], $_POST["taal"], $_POST["prijzen"], $_POST["rating"], $_POST["seizoenen"], $_GET["id"]]); 
         header("Refresh:0");
     }
